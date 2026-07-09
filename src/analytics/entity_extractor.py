@@ -1,3 +1,6 @@
+import re
+
+
 class EntityExtractor:
 
 
@@ -6,58 +9,58 @@ class EntityExtractor:
         self.company_keywords = {
 
 
-            # Alibaba Group
-
-            "Alibaba": "Alibaba",
-            "Alibaba Group": "Alibaba",
-            "AliExpress": "Alibaba",
-            "Taobao": "Taobao",
-            "Tmall": "Tmall",
-            "天猫": "Tmall",
-            "淘宝": "Taobao",
-            "阿里": "Alibaba",
-            "阿里巴巴": "Alibaba",
-
-
-
-            # JD
-
-            "JD": "JD",
             "JD.com": "JD",
+
             "Jingdong": "JD",
+
             "京东": "JD",
+
             "京东物流": "JD Logistics",
 
 
 
-            # PDD
+            "Alibaba Group": "Alibaba",
+
+            "Alibaba": "Alibaba",
+
+            "AliExpress": "Alibaba",
+
+            "阿里巴巴": "Alibaba",
+
+            "阿里": "Alibaba",
+
+            "Taobao": "Taobao",
+
+            "淘宝": "Taobao",
+
+            "Tmall": "Tmall",
+
+            "天猫": "Tmall",
+
+
+
+            "Pinduoduo": "PDD",
 
             "PDD": "PDD",
-            "Pinduoduo": "PDD",
+
             "Temu": "PDD",
+
             "拼多多": "PDD",
 
 
 
-            # ByteDance
-
             "TikTok Shop": "TikTok Shop",
+
             "TikTok": "TikTok",
+
             "Douyin": "Douyin Ecommerce",
+
             "抖音": "Douyin Ecommerce",
 
 
 
-            # Kuaishou
-
-            "Kuaishou": "Kuaishou",
-            "快手": "Kuaishou",
-
-
-
-            # Global ecommerce
-
             "Amazon": "Amazon",
+
             "亚马逊": "Amazon",
 
             "Walmart": "Walmart",
@@ -65,8 +68,6 @@ class EntityExtractor:
             "Shopify": "Shopify",
 
             "eBay": "eBay"
-
-
 
         }
 
@@ -78,14 +79,13 @@ class EntityExtractor:
         companies = []
 
 
-        text_lower = text.lower()
-
-
-
         for keyword, company in self.company_keywords.items():
 
 
-            if keyword.lower() in text_lower:
+            if self._match_keyword(
+                keyword,
+                text
+            ):
 
 
                 if company not in companies:
@@ -95,3 +95,40 @@ class EntityExtractor:
 
 
         return companies
+
+
+
+    def _match_keyword(
+        self,
+        keyword,
+        text
+    ):
+
+
+        # Chinese keywords
+        # direct matching
+
+        if re.search(
+            r"[\u4e00-\u9fff]",
+            keyword
+        ):
+
+            return keyword in text
+
+
+
+        # English keywords
+        # word boundary matching
+
+        pattern = (
+            r"\b"
+            + re.escape(keyword)
+            + r"\b"
+        )
+
+
+        return re.search(
+            pattern,
+            text,
+            re.IGNORECASE
+        ) is not None

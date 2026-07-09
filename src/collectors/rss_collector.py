@@ -3,7 +3,10 @@ from datetime import datetime
 
 from src.collectors.base_collector import BaseCollector
 from src.models.news import NewsArticle
+
 from src.analytics.entity_extractor import EntityExtractor
+from src.analytics.topic_extractor import TopicExtractor
+
 
 
 class RSSCollector(BaseCollector):
@@ -17,10 +20,14 @@ class RSSCollector(BaseCollector):
     ):
 
         self.rss_url = rss_url
+
         self.source_name = source_name
+
         self.source_type = source_type
 
         self.entity_extractor = EntityExtractor()
+
+        self.topic_extractor = TopicExtractor()
 
 
 
@@ -32,6 +39,7 @@ class RSSCollector(BaseCollector):
 
 
         articles = []
+
 
 
         for entry in feed.entries:
@@ -49,13 +57,25 @@ class RSSCollector(BaseCollector):
             )
 
 
-            companies = self.entity_extractor.extract(
-                title 
+            full_text = (
+                title
                 + " "
                 + content
                 + " "
                 + self.source_name
             )
+
+
+
+            companies = self.entity_extractor.extract(
+                full_text
+            )
+
+
+            topics = self.topic_extractor.extract(
+                full_text
+            )
+
 
 
             article = NewsArticle(
@@ -74,14 +94,18 @@ class RSSCollector(BaseCollector):
 
                 categories="ecommerce",
 
+                topics=topics,
+
                 url=entry.get(
                     "link",
                     ""
                 )
+
             )
 
 
             articles.append(article)
+
 
 
         return articles

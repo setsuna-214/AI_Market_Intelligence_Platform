@@ -1,8 +1,11 @@
 import json
+
 from pathlib import Path
+
 from datetime import datetime
 
 from src.models.news import NewsArticle
+
 
 
 class JSONReader:
@@ -16,6 +19,7 @@ class JSONReader:
 
     def load(self):
 
+
         with open(
             self.path,
             "r",
@@ -25,10 +29,13 @@ class JSONReader:
             data = json.load(f)
 
 
+
         articles = []
 
 
+
         for item in data:
+
 
             article = NewsArticle(
 
@@ -48,11 +55,18 @@ class JSONReader:
 
                 categories=item["categories"],
 
+                topics=item.get(
+                    "topics",
+                    []
+                ),
+
                 url=item["url"]
+
             )
 
 
             articles.append(article)
+
 
 
         return articles

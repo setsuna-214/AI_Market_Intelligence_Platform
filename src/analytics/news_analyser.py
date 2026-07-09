@@ -1,48 +1,66 @@
 from collections import Counter
 
 
+
 class NewsAnalyser:
+
 
     def analyse(self, articles):
 
+
         result = {}
 
-        # 新闻数量
-        result["total_articles"] = len(articles)
 
-
-        # 来源统计
-        sources = [
-            article.source_name
-            for article in articles
-        ]
-
-        result["sources"] = dict(
-            Counter(sources)
+        result["total_articles"] = len(
+            articles
         )
 
 
-        # 公司统计
+
+        result["sources"] = dict(
+            Counter(
+                article.source_name
+                for article in articles
+            )
+        )
+
+
+
         companies = []
 
         for article in articles:
+
             companies.extend(
                 article.companies
             )
+
 
         result["companies"] = dict(
             Counter(companies)
         )
 
 
-        # 分类统计
-        categories = [
-            article.categories
-            for article in articles
-        ]
+
+        topics = []
+
+        for article in articles:
+
+            topics.extend(
+                article.topics
+            )
+
+
+        result["topics"] = dict(
+            Counter(topics)
+        )
+
+
 
         result["categories"] = dict(
-            Counter(categories)
+            Counter(
+                article.categories
+                for article in articles
+            )
         )
 
 

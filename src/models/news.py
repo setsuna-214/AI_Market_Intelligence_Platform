@@ -11,4 +11,5 @@ class NewsArticle:
     published_at: datetime
     companies: List[str]
     categories: str
+    topics: List[str]
     url: str = ""

@@ -2,20 +2,16 @@ from datetime import datetime
 from pathlib import Path
 
 
-
 class ReportGenerator:
 
 
     def __init__(self, output_path):
 
-        self.output_path = Path(
-            output_path
-        )
+        self.output_path = Path(output_path)
 
 
 
     def generate(self, analysis_result):
-
 
         report = []
 
@@ -30,6 +26,8 @@ class ReportGenerator:
         )
 
 
+        # Overview
+
         report.append(
             "## Overview\n"
         )
@@ -42,8 +40,10 @@ class ReportGenerator:
 
 
 
+        # Companies
+
         report.append(
-            "## Company Exposure\n"
+            "\n## Company Exposure\n"
         )
 
 
@@ -55,7 +55,6 @@ class ReportGenerator:
 
         if companies:
 
-
             report.append(
                 "| Company | Mentions |\n"
             )
@@ -65,20 +64,15 @@ class ReportGenerator:
             )
 
 
-            sorted_companies = sorted(
+            for company, count in sorted(
                 companies.items(),
-                key=lambda x:x[1],
+                key=lambda x: x[1],
                 reverse=True
-            )
-
-
-            for company, count in sorted_companies:
-
+            ):
 
                 report.append(
                     f"| {company} | {count} |\n"
                 )
-
 
         else:
 
@@ -87,6 +81,51 @@ class ReportGenerator:
             )
 
 
+
+        # Topics
+
+        report.append(
+            "\n## Key Topics\n"
+        )
+
+
+        topics = analysis_result.get(
+            "topics",
+            {}
+        )
+
+
+        if topics:
+
+            report.append(
+                "| Topic | Mentions |\n"
+            )
+
+            report.append(
+                "|---|---:|\n"
+            )
+
+
+            for topic, count in sorted(
+                topics.items(),
+                key=lambda x:x[1],
+                reverse=True
+            ):
+
+                report.append(
+                    f"| {topic} | {count} |\n"
+                )
+
+
+        else:
+
+            report.append(
+                "No topics identified.\n"
+            )
+
+
+
+        # Sources
 
         report.append(
             "\n## Sources\n"
@@ -100,6 +139,8 @@ class ReportGenerator:
             )
 
 
+
+        # Categories
 
         report.append(
             "\n## Categories\n"
