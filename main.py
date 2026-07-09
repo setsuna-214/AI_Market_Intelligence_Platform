@@ -1,6 +1,5 @@
-# print("test")
-
 from src.collectors.rss_collector import RSSCollector
+from src.database.json_storage import JSONStorage
 
 
 def main():
@@ -14,13 +13,17 @@ def main():
     news = collector.collect()
 
 
-    print("Total articles:", len(news))
+    storage = JSONStorage(
+        "data/raw/news.json"
+    )
 
-    for article in news[:5]:
-        print("----------------")
-        print(article.title)
-        print(article.source_name)
-        print(article.url)
+    storage.save(news)
+
+
+    print(
+        "Saved articles:",
+        len(news)
+    )
 
 
 if __name__ == "__main__":
